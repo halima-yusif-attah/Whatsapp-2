@@ -1,12 +1,16 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+'use client'
+
 import Sidebar from "@/component/Sidebar";
+import { useSidebar } from "@/context/useSidebarContext";
 
 export default function Home() {
+  const { show } = useSidebar();
+  console.log('show-home', show);
+
   return (
    <main>
    
-    <Sidebar />
+    <Sidebar show={show}/>
    </main>
   );
 }

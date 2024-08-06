@@ -1,6 +1,7 @@
 import { Inter } from "next/font/google";
 import AuthProvider from "@/component/AuthProvider";
 import "./globals.css";
+import { SidebarProvider } from "@/context/useSidebarContext";
 
 
 const inter = Inter({ subsets: ["latin"] });
@@ -17,7 +18,9 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={inter.className}>
         <AuthProvider>
-        {children}
+          <SidebarProvider>
+           {children}
+         </SidebarProvider>
         </AuthProvider>
       </body>
     </html>

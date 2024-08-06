@@ -9,6 +9,7 @@ import { useCollection } from "react-firebase-hooks/firestore"
 import { collection, where, query, doc } from "firebase/firestore"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from 'react'
+import { useSidebar } from "@/context/useSidebarContext"
 
 
 const Chat = ({ id, users }) => {
@@ -16,6 +17,7 @@ const Chat = ({ id, users }) => {
   const router = useRouter()
   const [user] = useAuthState(auth)
   const recipientEmail = getRecipientEmail(users, user)
+  const { showSidebar } = useSidebar();
   
 
 const usersCollectionRef = collection(doc(db, 'chats', id), 'clients');
@@ -37,6 +39,7 @@ const usersCollectionRef = collection(doc(db, 'chats', id), 'clients');
 
   const enterChat = () => {
     router.push(`/chats/${id}`)
+    showSidebar()
   }
   
   const recipient = recipientSnapshot?.docs?.[0]?.data();

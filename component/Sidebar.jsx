@@ -12,8 +12,9 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { useCollection } from "react-firebase-hooks/firestore";
 import Chat from './Chat';
 
-const Sidebar = ({visible}) => {
+const Sidebar = ({show}) => {
   const [user] = useAuthState(auth);
+  console.log('show-bar.jsx', show)
 
   const userChatRef = query(
     collection(db, 'chats'),
@@ -44,7 +45,8 @@ const Sidebar = ({visible}) => {
   
 
   return (
-    <Container visible={visible}>
+    <Container show={show} >
+      
         <Header>
             <UserAvatar src ={user.photoURL} onClick={() => auth.signOut()}/>  
             <IconsContainer>
@@ -95,7 +97,8 @@ const Container = styled.div`
   scrollbar-width: none;
 
   @media (max-width: 420px) {
-     display: ${props => (props.visible ? 'block' : 'none')};
+    /* display: ${show => (show ? 'block' : 'none')}; */
+     display: ${props => (props.show? 'block' : 'none')};
      margin-bottom: 1rem;
   }
 `

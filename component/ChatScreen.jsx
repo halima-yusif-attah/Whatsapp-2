@@ -18,13 +18,14 @@ import getRecipientEmail from '@/utils/getRecipientEmail';
 import Timeago from 'react-timeago';
 import Sidebar from './Sidebar';
 
-const  ChatScreen = ({chat, messages}) => {
+const  ChatScreen = ({chat, messages, show, showSidebar}) => {
   const [user] = useAuthState(auth);
   const [input, setInput] = useState('')
-  const [show, setShow] = useState(false);
+  
   const chatId = chat.id;
   const router = useRouter();
-
+ 
+  console.log("show-screen.jsx", show)
 
   const messagesQuery = query(
         collection(doc(db, 'chats', chatId), "messages"),
@@ -41,10 +42,7 @@ const  ChatScreen = ({chat, messages}) => {
   const usersSnaphots = usersRecipientSnapshot?.docs?.[0]?.data();
   
   
-  const showSidebar = () => {
-    console.log("show-sidebar", show)
-    setShow(!show)
-  }
+ 
 
   const sendMessage = async (e) => {
     e.preventDefault();
@@ -103,8 +101,8 @@ const  ChatScreen = ({chat, messages}) => {
 
         <MessageContainer>
           
-          {show && <Sidebar visible={show} />}
-         
+          {/* {show && <Sidebar visible={show} />}
+           {console.log("show-2", show)} */}
           {!show && 
           <>
           {messages.map(message => (
