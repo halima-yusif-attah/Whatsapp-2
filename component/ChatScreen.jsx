@@ -13,23 +13,18 @@ import InsertEmoticonIcon from '@material-ui/icons/InsertEmoticon';
 import { useState, useEffect } from 'react';
 import Message from './Message'
 import MicIcon from "@material-ui/icons/Mic";
-import firebase from "../firebase"
+import ListIcon from '@material-ui/icons/List';
 import getRecipientEmail from '@/utils/getRecipientEmail';
-import { getLastSeen } from '@/app/chats/[id]/page';
 import Timeago from 'react-timeago';
-import moment from 'moment';
-import ReactTimeago from 'react-timeago';
-
-
+import Sidebar from './Sidebar';
 
 const  ChatScreen = ({chat, messages}) => {
   const [user] = useAuthState(auth);
   const [input, setInput] = useState('')
-  const [lastSeen, setLastSeen] = useState(null);
+  const [show, setShow] = useState(false);
   const chatId = chat.id;
   const router = useRouter();
 
-  console.log('user.id-screen', user.id)
 
   const messagesQuery = query(
         collection(doc(db, 'chats', chatId), "messages"),
@@ -42,32 +37,14 @@ const  ChatScreen = ({chat, messages}) => {
       collection(db, 'users'),
     where("uid", "!=", user.uid))
     )
-  console.log("usersRecipientSnapshot", usersRecipientSnapshot?.docs?.[0]?.data())
 
   const usersSnaphots = usersRecipientSnapshot?.docs?.[0]?.data();
-  console.log("usersSnaphots.email ", usersSnaphots?.email === getRecipientEmail(chat.clients, user))
   
   
-  
-
-  // const showMessages = () => {
-  //   const messagesSnapshot = getDocs(messagesQuery)
-  //   console.log('messagesSnapshot', messagesSnapshot)
-  //   console.log('messagesSnapshot', messagesSnapshot)
-  //   if (messagesSnapshot) {
-  //     return messagesSnapshot.map((message) => (
-  //       <Message
-  //       key={message.id}
-  //       user={message.data().user}
-  //       message={{
-  //         ...message.data(),
-  //         timestamp: message.data().timestamp?.toDate().getTime(),
-
-  //       }}
-  //       />
-  //     ))
-  //   }
-  // }
+  const showSidebar = () => {
+    console.log("show-sidebar", show)
+    setShow(!show)
+  }
 
   const sendMessage = async (e) => {
     e.preventDefault();
@@ -91,15 +68,16 @@ const  ChatScreen = ({chat, messages}) => {
 
   const recipientEmail = getRecipientEmail(chat.clients, user)
 
-  console.log("date", new Date(usersSnaphots?.lastSeen.seconds).toTimeString())
-  
-
- 
  
   return (
     <Container>
         <Header>
-          <Avatar />
+          { (usersSnaphots?.email === getRecipientEmail(chat.clients, user))?
+          (<UserAvatar src={usersSnaphots?.photo} />)
+        :
+         (
+         <UserAvatar>{recipientEmail[0]}</UserAvatar>
+        )} 
           <HeaderInformation>
             <h3>{recipientEmail}</h3>
             {(usersSnaphots?.email === getRecipientEmail(chat.clients, user))? 
@@ -114,10 +92,21 @@ const  ChatScreen = ({chat, messages}) => {
             <IconButton>
               <MoreVertIcon />
             </IconButton>
+
+            <Options onClick={() => showSidebar()}>
+               <IconButton>
+              <ListIcon />
+            </IconButton>
+            </Options>
           </HeaderIcons>
         </Header>
 
         <MessageContainer>
+          
+          {show && <Sidebar visible={show} />}
+         
+          {!show && 
+          <>
           {messages.map(message => (
         <Message
         key={message.id}
@@ -129,7 +118,8 @@ const  ChatScreen = ({chat, messages}) => {
         }}
         />
       ))}
-           
+      </>
+    }  
           <EndMessage/>
         </MessageContainer>
         <InputContainer>
@@ -172,9 +162,36 @@ const HeaderInformation = styled.div`
     font-size: 14px;
     color: gray;
   }
+
+  @media (max-width: 430px) {
+    margin-left: 10px;
+
+  > h3 {
+    margin-bottom: 3px;
+    font-size: 12px;
+  }
+  >p {
+    font-size: 8px;
+  }
+  }
 `
 
-const HeaderIcons = styled.div``
+const HeaderIcons = styled.div`
+  @media (max-width: 430px) {
+    display: flex;
+    justify-content: center;
+  }
+`
+const UserAvatar = styled(Avatar)`
+ margin: 5px;
+ margin-right: 15px;
+`
+
+const Options = styled.div`
+  @media (min-width: 430px) {
+    display: none;
+  }
+`
 
 const MessageContainer = styled.div`
   height: 90vh;

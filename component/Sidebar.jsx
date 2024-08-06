@@ -12,7 +12,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { useCollection } from "react-firebase-hooks/firestore";
 import Chat from './Chat';
 
-const Sidebar = () => {
+const Sidebar = ({visible}) => {
   const [user] = useAuthState(auth);
 
   const userChatRef = query(
@@ -20,8 +20,6 @@ const Sidebar = () => {
     where('clients', 'array-contains', user.email)
   );
   const [chatsSnapshot] = useCollection(userChatRef);
-  console.log("chatsSnapshot-bar", chatsSnapshot)
-
 
   
   const createChat = () => {
@@ -32,7 +30,6 @@ const Sidebar = () => {
     if (EmailValidator.validate(input) && !chatAlreadyExists(input) && input !== user.email) {
       //We need to add the chat into the the DB 'chats collection if it doesn't already exists and is valid
       addDoc(collection(db, 'chats'), {
-        // users: [user.email, input]
         clients: [user.email, input]
       })
     }
@@ -47,12 +44,9 @@ const Sidebar = () => {
   
 
   return (
-    <Container>
+    <Container visible={visible}>
         <Header>
-            <UserAvatar src ={user.photoURL} onClick={() => {
-              console.log('auth.signOut()', auth.signOut())
-              return auth.signOut()
-            }}/>  
+            <UserAvatar src ={user.photoURL} onClick={() => auth.signOut()}/>  
             <IconsContainer>
                 <IconButton>
                   <ChatIcon />
@@ -91,6 +85,7 @@ const Container = styled.div`
   min-width: 330px;
   max-width: 350px;
   overflow-y: scroll;
+  background-color: white;
 
   ::-webkit-scrollbar {
     display: none
@@ -98,6 +93,11 @@ const Container = styled.div`
 
   -ms-overflow-style: none;
   scrollbar-width: none;
+
+  @media (max-width: 420px) {
+     display: ${props => (props.visible ? 'block' : 'none')};
+     margin-bottom: 1rem;
+  }
 `
 
 const Search = styled.div`

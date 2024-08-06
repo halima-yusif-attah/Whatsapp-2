@@ -16,9 +16,6 @@ const Chat = ({ id, users }) => {
   const router = useRouter()
   const [user] = useAuthState(auth)
   const recipientEmail = getRecipientEmail(users, user)
-  console.log('users-chat', users)
-
-  console.log("router-chat", router)
   
 
 const usersCollectionRef = collection(doc(db, 'chats', id), 'clients');
@@ -43,9 +40,8 @@ const usersCollectionRef = collection(doc(db, 'chats', id), 'clients');
   }
   
   const recipient = recipientSnapshot?.docs?.[0]?.data();
-  console.log("recipient.docs-chat ", recipientSnapshot?.docs)
-  console.log("recipient-chat ", recipient)
-  
+ 
+ 
   const usersSnaphots = usersRecipientSnapshot?.docs?.[0]?.data();
 
     return (
