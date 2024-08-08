@@ -3,7 +3,7 @@ import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { getFirestore, serverTimestamp  } from 'firebase/firestore';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAZDlijJzX0NiaZCyDvBX-tqvEujWmxsS0",
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
   authDomain: "whatsapp-2-ff138.firebaseapp.com",
   projectId: "whatsapp-2-ff138", 
   storageBucket: "whatsapp-2-ff138.appspot.com",
